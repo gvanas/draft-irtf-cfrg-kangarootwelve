@@ -3,20 +3,20 @@
 
 
 Crypto Forum                                                  B. Viguier
-Internet-Draft                                        Radboud University
+Internet-Draft                                             ABN AMRO Bank
 Intended status: Informational                              D. Wong, Ed.
-Expires: March 25, 2021                                         Facebook
+Expires: 20 February 2023                                      O(1) Labs
                                                       G. Van Assche, Ed.
                                                       STMicroelectronics
                                                             Q. Dang, Ed.
                                                                     NIST
                                                           J. Daemen, Ed.
                                                       Radboud University
-                                                      September 21, 2020
+                                                          19 August 2022
 
 
                              KangarooTwelve
-                   draft-irtf-cfrg-kangarootwelve-04
+                   draft-irtf-cfrg-kangarootwelve-08
 
 Abstract
 
@@ -46,51 +46,40 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 25, 2021.
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 1]
-
-Internet-Draft               KangarooTwelve               September 2020
-
+   This Internet-Draft will expire on 20 February 2023.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
-   Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
-   publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
-   to this document.  Code Components extracted from this document must
-   include Simplified BSD License text as described in Section 4.e of
-   the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Conventions . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Specifications  . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.1.  Inner function F  . . . . . . . . . . . . . . . . . . . .   5
-     2.2.  Tree hashing over F . . . . . . . . . . . . . . . . . . .   6
-     2.3.  length_encode( x )  . . . . . . . . . . . . . . . . . . .   9
-   3.  Test vectors  . . . . . . . . . . . . . . . . . . . . . . . .   9
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
-   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
-     6.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Pseudocode . . . . . . . . . . . . . . . . . . . . .  14
-     A.1.  Keccak-p[1600,n_r=12] . . . . . . . . . . . . . . . . . .  14
-     A.2.  KangarooTwelve  . . . . . . . . . . . . . . . . . . . . .  15
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  16
+   1.  Introduction
+     1.1.  Conventions
+   2.  Specifications
+     2.1.  Inner function F
+     2.2.  Tree hashing over F
+     2.3.  length_encode( x )
+   3.  Test vectors
+   4.  IANA Considerations
+   5.  Security Considerations
+   6.  References
+     6.1.  Normative References
+     6.2.  Informative References
+   Appendix A.  Pseudocode
+     A.1.  Keccak-p[1600,n_r=12]
+     A.2.  KangarooTwelve
+   Authors' Addresses
 
 1.  Introduction
 
@@ -106,14 +95,6 @@ Table of Contents
    message into fragments to exploit available parallelism.  It then
    applies an inner hash function F on each of them separately before
    applying F again on the concatenation of the digests.  It makes use
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 2]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
    of Sakura coding for ensuring soundness of the tree hashing mode
    [SAKURA].  The inner hash function F is a sponge function and uses a
    round-reduced version of the permutation Keccak-f used in SHA-3,
@@ -124,21 +105,21 @@ Internet-Draft               KangarooTwelve               September 2020
    With respect to [FIPS202] and [SP800-185] functions, KangarooTwelve
    features the following advantages:
 
-   o  Unlike SHA3-224, SHA3-256, SHA3-384, SHA3-512, KangarooTwelve has
+   *  Unlike SHA3-224, SHA3-256, SHA3-384, SHA3-512, KangarooTwelve has
       an extendable output.
 
-   o  Unlike any [FIPS202] defined function, similarly to functions
+   *  Unlike any [FIPS202] defined function, similarly to functions
       defined in [SP800-185], KangarooTwelve allows the use of a
       customization string.
 
-   o  Unlike any [FIPS202] and [SP800-185] functions but ParallelHash,
+   *  Unlike any [FIPS202] and [SP800-185] functions but ParallelHash,
       KangarooTwelve splits the input message into fragments to exploit
       available parallelism.
 
-   o  Unlike ParallelHash, KangarooTwelve does not have overhead when
+   *  Unlike ParallelHash, KangarooTwelve does not have overhead when
       processing short messages.
 
-   o  The Keccak-f permutation in KangarooTwelve has half the number of
+   *  The Keccak-f permutation in KangarooTwelve has half the number of
       rounds of the one used in SHA3, making it faster than any function
       defined in [FIPS202] and [SP800-185].
 
@@ -160,15 +141,6 @@ Internet-Draft               KangarooTwelve               September 2020
       bytes `00`. For example, `00`^7 = `00 00 00 00 00 00 00`.
 
    `00`^0  denotes the empty byte-string.
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 3]
-
-Internet-Draft               KangarooTwelve               September 2020
-
 
    a||b  denotes the concatenation of two strings a and b.  For example,
       `10`||`F1` = `10 F1`
@@ -214,17 +186,6 @@ Internet-Draft               KangarooTwelve               September 2020
    By default, the Customization string is the empty string.  For an API
    that does not support a customization string input, C MUST be the
    empty string.
-
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 4]
-
-Internet-Draft               KangarooTwelve               September 2020
-
 
 2.1.  Inner function F
 
@@ -275,13 +236,6 @@ Internet-Draft               KangarooTwelve               September 2020
    it cannot have the MSB set to 1), should it be the last byte of the
    block.  For more details, refer to Section 6.1 of [K12].
 
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 5]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
    A pseudocode version is available as follows:
 
      F(input, outputByteLen):
@@ -329,15 +283,6 @@ Internet-Draft               KangarooTwelve               September 2020
 
    From S_1 .. S_(n-1), compute the 32-byte Chaining Values CV_1 ..
    CV_(n-1).  In order to be optimally efficient, this computation
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 6]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
    SHOULD exploit the parallelism available on the platform such as SIMD
    instructions.
 
@@ -345,9 +290,9 @@ Internet-Draft               KangarooTwelve               September 2020
 
    Compute the final node: FinalNode.
 
-   o  If |S| <= 8192 bytes, FinalNode = S
+   *  If |S| <= 8192 bytes, FinalNode = S
 
-   o  Otherwise compute FinalNode as follows:
+   *  Otherwise compute FinalNode as follows:
 
              FinalNode = S_0 || `03 00 00 00 00 00 00 00`
              FinalNode = FinalNode || CV_1
@@ -358,11 +303,11 @@ Internet-Draft               KangarooTwelve               September 2020
 
    Finally, KangarooTwelve output is retrieved:
 
-   o  If |S| <= 8192 bytes, from F( FinalNode||`07`, L )
+   *  If |S| <= 8192 bytes, from F( FinalNode||`07`, L )
 
          KangarooTwelve( M, C, L ) = F( FinalNode||`07`, L )
 
-   o  Otherwise from F( FinalNode||`06`, L )
+   *  Otherwise from F( FinalNode||`06`, L )
 
          KangarooTwelve( M, C, L ) = F( FinalNode||`06`, L )
 
@@ -376,23 +321,6 @@ Internet-Draft               KangarooTwelve               September 2020
    The following figure illustrates the computation flow of
    KangarooTwelve for |S| > 8192 bytes and where length_encode( x ) is
    abbreviated as l_e( x ):
-
-
-
-
-
-
-
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 7]
-
-Internet-Draft               KangarooTwelve               September 2020
-
 
                               +--------------+
                               |     S_0      |
@@ -439,17 +367,6 @@ Internet-Draft               KangarooTwelve               September 2020
            |  FinalNode         |       `06`       |
            +--------------------+------------------+
 
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 8]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
 2.3.  length_encode( x )
 
    The function length_encode takes as inputs a non negative integer x <
@@ -488,23 +405,6 @@ Internet-Draft               KangarooTwelve               September 2020
        Pattern for a length of 17 bytes:
        ptn(17) =
          `00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10`
-
-
-
-
-
-
-
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                 [Page 9]
-
-Internet-Draft               KangarooTwelve               September 2020
-
 
        Pattern for a length of 17**2 bytes:
        ptn(17**2) =
@@ -554,14 +454,6 @@ Internet-Draft               KangarooTwelve               September 2020
        `0C 31 5E BC DE DB F6 14 26 DE 7D CF 8F B7 25 D1
         E7 46 75 D7 F5 32 7A 50 67 F3 67 B1 08 EC B6 7C`
 
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 10]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
      KangarooTwelve(M=ptn(17**3 bytes), C=`00`^0, 32):
        `CB 55 2E 2E C7 7D 99 10 70 1D 57 8B 45 7D DF 77
         2C 12 E3 22 E4 EE 7F E4 17 F9 2C 75 8F 0D 59 D0`
@@ -608,22 +500,14 @@ Internet-Draft               KangarooTwelve               September 2020
 
    To be more precise, KangarooTwelve is made of two layers:
 
-   o  The inner function F.  This layer relies on cryptanalysis.
+   *  The inner function F.  This layer relies on cryptanalysis.
       KangarooTwelve's F function is exactly Keccak[r=1344, c=256] (as
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 11]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
       in SHAKE128) reduced to 12 rounds.  Any reduced-round
       cryptanalysis on Keccak is also a reduced-round cryptanalysis of
       KangarooTwelve's F (provided the number of rounds attacked is not
       higher than 12).
 
-   o  The tree hashing over F.  This layer is a mode on top of F that
+   *  The tree hashing over F.  This layer is a mode on top of F that
       does not introduce any vulnerability thanks to the use of Sakura
       coding proven secure in [SAKURA].
 
@@ -659,30 +543,24 @@ Internet-Draft               KangarooTwelve               September 2020
    protection, and this amounts to a single execution of the underlying
    permutation.
 
+   In any case, KangarooTwelve MAY be used to compute a MAC with the key
+   reversibly prepended or appended to the input.  For instance, one MAY
+   compute a MAC on short messages simply calling KangarooTwelve with
+   the key as the customization string, i.e., MAC = K12(M, Key, L).
+
 6.  References
 
 6.1.  Normative References
-
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 12]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
-   [FIPS202]  National Institute of Standards and Technology, "FIPS PUB
-              202 - SHA-3 Standard: Permutation-Based Hash and
-              Extendable-Output Functions",
-              WWW http://dx.doi.org/10.6028/NIST.FIPS.202, August 2015.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
+
+   [FIPS202]  National Institute of Standards and Technology, "FIPS PUB
+              202 - SHA-3 Standard: Permutation-Based Hash and
+              Extendable-Output Functions",
+              WWW http://dx.doi.org/10.6028/NIST.FIPS.202, August 2015.
 
    [SP800-185]
               National Institute of Standards and Technology, "NIST
@@ -699,36 +577,27 @@ Internet-Draft               KangarooTwelve               September 2020
               chapter/10.1007/978-3-319-93387-0_21,
               WWW http://eprint.iacr.org/2016/770.pdf, July 2018.
 
-   [KECCAK_CRYPTANALYSIS]
-              Keccak Team, "Summary of Third-party cryptanalysis of
-              Keccak", WWW https://www.keccak.team/third_party.html,
-              2017.
-
-   [NISTPQ]   National Institute of Standards and Technology,
-              "Submission Requirements and Evaluation Criteria for the
-              Post-Quantum Cryptography Standardization Process", WWW
-              https://csrc.nist.gov/CSRC/media/Projects/Post-Quantum-
-              Cryptography/documents/call-for-proposals-final-dec-
-              2016.pdf, December 2016.
-
    [SAKURA]   Bertoni, G., Daemen, J., Peeters, M., and G. Van Assche,
               "Sakura: a flexible coding for tree hashing", WWW
               https://link.springer.com/
               chapter/10.1007/978-3-319-07536-5_14,
               WWW http://eprint.iacr.org/2013/231.pdf, June 2014.
 
+   [KECCAK_CRYPTANALYSIS]
+              Keccak Team, "Summary of Third-party cryptanalysis of
+              Keccak", WWW https://www.keccak.team/third_party.html,
+              2017.
+
    [XKCP]     Bertoni, G., Daemen, J., Peeters, M., Van Assche, G., and
               R. Van Keer, "eXtended Keccak Code Package",
               WWW https://github.com/XKCP/XKCP, September 2018.
 
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 13]
-
-Internet-Draft               KangarooTwelve               September 2020
-
+   [NISTPQ]   National Institute of Standards and Technology,
+              "Submission Requirements and Evaluation Criteria for the
+              Post-Quantum Cryptography Standardization Process", WWW 
+              https://csrc.nist.gov/CSRC/media/Projects/Post-Quantum-
+              Cryptography/documents/call-for-proposals-final-dec-
+              2016.pdf, December 2016.
 
 Appendix A.  Pseudocode
 
@@ -778,14 +647,6 @@ A.1.  Keccak-p[1600,n_r=12]
          (current, lanes[x][y]) =
              (lanes[x][y], ROL64(current, (t+1)*(t+2)/2))
 
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 14]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
        # chi
        for y from 0 to 4
          for x from 0 to 4
@@ -833,64 +694,30 @@ A.2.  KangarooTwelve
          return F(FinalNode || `06`, outputByteLen)
      end
 
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 15]
-
-Internet-Draft               KangarooTwelve               September 2020
-
-
 Authors' Addresses
 
-   Benoit Viguier
-   Radboud University
-   Toernooiveld 212
-   Nijmegen
-   The Netherlands
-
-   EMail: b.viguier@cs.ru.nl
+   Benoît Viguier
+   ABN AMRO Bank
+   Groenelaan 2
+   Amstelveen
+   Email: cs.ru.nl@viguier.nl
 
 
    David Wong (editor)
-   Facebook
-
-   EMail: davidwong.crypto@gmail.com
+   O(1) Labs
+   Email: davidwong.crypto@gmail.com
 
 
    Gilles Van Assche (editor)
    STMicroelectronics
-
-   EMail: gilles.vanassche@st.com
+   Email: gilles.vanassche@st.com
 
 
    Quynh Dang (editor)
    National Institute of Standards and Technology
-
-   EMail: quynh.dang@nist.gov
+   Email: quynh.dang@nist.gov
 
 
    Joan Daemen (editor)
    Radboud University
-
-   EMail: joan@cs.ru.nl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Viguier, et al.          Expires March 25, 2021                [Page 16]
+   Email: joan@cs.ru.nl
